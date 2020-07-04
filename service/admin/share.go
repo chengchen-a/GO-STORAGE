@@ -35,13 +35,7 @@ func (service *AdminListService) Shares() serializer.Response {
 		tx = tx.Where(k+" = ?", v)
 	}
 
-	if len(service.Searches) > 0 {
-		search := ""
-		for k, v := range service.Searches {
-			search += k + " like '%" + v + "%' OR "
-		}
-		search = strings.TrimSuffix(search, " OR ")
-		tx = tx.Where(search)
+	
 	}
 
 	// 计算总数用于分页
