@@ -6,7 +6,10 @@ import (
 	"github.com/HFO4/cloudreve/pkg/serializer"
 )
 
-
+// AddGroupService 用户组添加服务
+type AddGroupService struct {
+	Group model.Group `json:"group" binding:"required"`
+}
 
 // GroupService 用户组ID服务
 type GroupService struct {
