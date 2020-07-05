@@ -40,8 +40,6 @@ func main() {
 		}()
 	}
 
-	util.Log().Info("开始监听 %s", conf.SystemConfig.Listen)
-	if err := api.Run(conf.SystemConfig.Listen); err != nil {
-		util.Log().Error("无法监听[%s]，%s", conf.SystemConfig.Listen, err)
+	
 	}
 }
