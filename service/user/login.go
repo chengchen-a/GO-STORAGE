@@ -73,7 +73,12 @@ func (service *UserResetEmailService) Reset(c *gin.Context) serializer.Response 
 	isCaptchaRequired := model.IsTrueVal(model.GetSettingByName("forget_captcha"))
 	useRecaptcha := model.IsTrueVal(model.GetSettingByName("captcha_IsUseReCaptcha"))
 	recaptchaSecret := model.GetSettingByName("captcha_ReCaptchaSecret")
-	
+	if isCaptchaRequired && !useRecaptcha {
+		captchaID := util.GetSession(c, "captchaID")
+		util.DeleteSession(c, "captchaID")
+		if captchaID == nil || !base64Captcha.VerifyCaptcha(captchaID.(string), service.CaptchaCode) {
+			return serializer.ParamErr("验证码错误", nil)
+		}
 	} else if isCaptchaRequired && useRecaptcha {
 		captcha, err := recaptcha.NewReCAPTCHA(recaptchaSecret, recaptcha.V2, 10*time.Second)
 		if err != nil {
