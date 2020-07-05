@@ -129,37 +129,7 @@ func (job *ImportTask) Do() {
 	}
 
 	
-		// 插入文件记录到用户文件系统
-	for _, object := range objects {
-		if !object.IsDir {
-			// 创建文件信息
-			virtualPath := path.Dir(path.Join(job.TaskProps.Dst, object.RelativePath))
-			fileHeader := local.FileStream{
-				Size:        object.Size,
-				VirtualPath: virtualPath,
-				Name:        object.Name,
-			}
-			addFileCtx := context.WithValue(ctx, fsctx.FileHeaderCtx, fileHeader)
-			addFileCtx = context.WithValue(addFileCtx, fsctx.SavePathCtx, object.Source)
-
-			// 查找父目录
-			parentFolder := &model.Folder{}
-			if parent, ok := pathCache[virtualPath]; ok {
-				parentFolder = parent
-			} else {
-				exist, folder := fs.IsPathExist(virtualPath)
-				if exist {
-					parentFolder = folder
-				} else {
-					folder, err := fs.CreateDirectory(context.Background(), virtualPath)
-					if err != nil {
-						util.Log().Warning("导入任务无法创建用户目录[%s], %s",
-							virtualPath, err)
-						continue
-					}
-					parentFolder = folder
-				}
-			}
+	
 
 			// 插入文件记录
 			_, err := fs.AddFile(addFileCtx, parentFolder)
